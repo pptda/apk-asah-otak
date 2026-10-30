@@ -1,0 +1,15 @@
+{
+  "name": "asah-otak-seru",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Asah Otak Seru - game asah otak untuk anak (dibungkus jadi aplikasi Android)",
+  "scripts": {
+    "apk": "node buat-apk.js"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/cli": "8.6.0",
+    "@capacitor/core": "8.6.0"
+  }
+}

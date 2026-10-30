@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Asah Otak Seru</title>
+<style>
+/* Font Baloo 2 disimpan di folder "fonts" agar aplikasi tetap cantik tanpa internet */
+@font-face{font-family:'Baloo 2';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/baloo-2-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'Baloo 2';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/baloo-2-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'Baloo 2';font-style:normal;font-weight:800;font-display:swap;src:url('fonts/baloo-2-latin-800-normal.woff2') format('woff2')}
+:root{--bg:#E3F1FB;--surface:#fff;--ink:#17324D;--muted:#4F6B84;--sun:#FFC93C;--coral:#FF6B57;--mint:#1FAE8C;--line:#B9D6EC;--onsun:#17324D;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F2233;--surface:#17344B;--ink:#EAF4FB;--muted:#9DB8CE;--line:#2C5270}}
+:root[data-theme="dark"]{--bg:#0F2233;--surface:#17344B;--ink:#EAF4FB;--muted:#9DB8CE;--line:#2C5270}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Baloo 2','Trebuchet MS',system-ui,sans-serif;font-weight:500;line-height:1.4}
+main{max-width:700px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+h1{font-size:1.9rem;font-weight:800;margin:0;line-height:1.1}
+.score{background:var(--sun);color:var(--onsun);font-weight:800;border-radius:999px;padding:6px 16px;font-size:1.2rem;white-space:nowrap}
+nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+nav button{font:inherit;font-weight:700;font-size:1rem;border:3px solid var(--line);background:var(--surface);color:var(--ink);border-radius:18px;padding:10px 4px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button:focus-visible{outline:4px solid var(--coral);outline-offset:2px}
+.panel{background:var(--surface);border-radius:28px;padding:20px;border:3px solid var(--line)}
+.panel h2{margin:0 0 4px;font-size:1.5rem}
+.hint{color:var(--ink);font-size:1.15rem;margin:0 0 14px}
+.row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.tile{min-width:52px;height:60px;border-radius:16px;background:var(--bg);display:grid;place-items:center;font-size:2rem;font-weight:800;padding:0 8px}
+.tile.q{background:var(--sun);color:var(--onsun);border:3px dashed var(--ink)}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.opt{font:inherit;font-size:2rem;font-weight:800;min-height:76px;border-radius:20px;border:3px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.opt:hover{border-color:var(--ink)}
+.opt.ok{background:var(--mint);color:#fff;border-color:var(--mint)}
+.opt.no{background:var(--coral);color:#fff;border-color:var(--coral)}
+.msg{min-height:1.8em;text-align:center;font-weight:700;font-size:1.15rem;margin:12px 0 0}
+.next{display:block;margin:12px auto 0;font:inherit;font-weight:800;font-size:1.1rem;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:10px 28px;cursor:pointer}
+.grid{display:grid;gap:8px;margin-top:14px}
+.card{aspect-ratio:1;border-radius:20px;border:3px solid var(--line);background:var(--ink);color:var(--sun);font-size:clamp(3rem,15vw,5.2rem);line-height:1;padding:0;cursor:pointer;display:grid;place-items:center;font-family:inherit;font-weight:800}
+.grid[data-c="4"] .card{font-size:clamp(2.4rem,11vw,4rem)}
+.tile.big{font-size:2.6rem;height:auto;padding:12px 28px}
+#bopts .opt{font-size:3.2rem;min-height:104px}
+.card.open{background:var(--bg);color:var(--ink)}
+.card.done{background:var(--mint);color:#fff;border-color:var(--mint)}
+.info{display:flex;justify-content:space-between;font-weight:700;color:var(--muted)}
+.menu{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.gcard{font:inherit;text-align:left;background:var(--surface);color:var(--ink);border:3px solid var(--line);border-radius:24px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-height:158px}
+.gcard:hover{border-color:var(--ink)}
+.gcard .ic{font-size:2.8rem;line-height:1.1}
+.gcard b{font-size:1.15rem;font-weight:800}
+.gcard small{color:var(--muted);font-size:.9rem;line-height:1.2}
+.gcard .lv{margin-top:auto;align-self:flex-start;background:var(--sun);color:var(--onsun);font-weight:800;border-radius:999px;padding:2px 12px;font-size:.9rem}
+.back{font:inherit;font-weight:700;background:none;border:3px solid var(--line);color:var(--ink);border-radius:999px;padding:2px 16px;cursor:pointer;margin-bottom:10px}
+.pads{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.pad{aspect-ratio:1.5;border:0;border-radius:24px;cursor:pointer;opacity:.5}
+.pad.lit{opacity:1;box-shadow:0 0 0 6px var(--ink)}
+#kopts{grid-template-columns:repeat(4,1fr)}#kopts .opt{font-size:1.7rem;min-height:64px}
+#vopts{grid-template-columns:repeat(3,1fr)}
+#cq{font-size:1.5rem;font-weight:800;text-align:center;background:var(--bg);border-radius:20px;padding:12px;margin:10px 0}
+#cq .qe{display:block;font-size:4.2rem;line-height:1.2;margin-top:4px}
+#crow .tile{font-size:2.8rem;min-width:66px;height:76px}
+.panel .hint{font-size:1.45rem;font-weight:700;line-height:1.3;background:var(--bg);border-radius:16px;padding:10px 14px}
+h3.cat{grid-column:1/-1;margin:14px 0 0;font-size:1.3rem;font-weight:800}
+.cell{aspect-ratio:1;border-radius:14px;border:3px solid var(--line);background:var(--bg);font-size:clamp(1.8rem,9vw,2.8rem);line-height:1;padding:0;cursor:pointer;display:grid;place-items:center;font-family:inherit}
+.cell.ok{background:var(--mint);border-color:var(--mint)}
+.cell.no{background:var(--coral);border-color:var(--coral)}
+#wopts .opt{font-size:1.7rem}
+/* ===== Game Petualangan Perkalian (semua nama kelas diawali "pk-") ===== */
+/* Deretan tombol angka tabel 1-10: 5 kolom */
+.pk-chips{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}
+/* Deretan tombol pilihan waktu: 3 kolom */
+.pk-t3{grid-template-columns:repeat(3,1fr)}
+/* Satu tombol angka / waktu */
+.pk-chip{font:inherit;font-weight:800;font-size:1.4rem;padding:12px 0;border-radius:16px;border:3px solid var(--line);border-bottom-width:6px;background:var(--bg);color:var(--ink);cursor:pointer}
+.pk-t3 .pk-chip{font-size:1.1rem}
+/* Tombol yang sedang dipilih berwarna kuning */
+.pk-chip[aria-pressed="true"]{background:var(--sun);color:var(--onsun);border-color:var(--ink)}
+/* Tombol kecil bergaris bawah ("Pilih semua", "Hapus pilihan", "Suara") */
+.pk-link{font:inherit;font-weight:700;background:none;border:0;color:var(--ink);text-decoration:underline;cursor:pointer;padding:6px 8px;font-size:1rem}
+/* Judul kecil di atas tiap pilihan */
+.pk-label{display:block;font-weight:800;font-size:1.2rem;margin-top:8px}
+/* Tombol "Mulai main" tampak pudar saat belum ada tabel yang dipilih */
+.next:disabled{opacity:.45;cursor:not-allowed}
+/* Bilah kemajuan soal (hijau) dan bilah sisa waktu (kuning, jadi merah saat hampir habis) */
+.pk-bar,.pk-tbar{height:14px;background:var(--line);border-radius:999px;overflow:hidden;margin:10px 0}
+.pk-bar i,.pk-tbar i{display:block;height:100%;border-radius:999px}
+.pk-bar i{width:0;background:var(--mint);transition:width .3s}
+.pk-tbar i{width:100%;background:var(--sun)}
+.pk-tbar.low i{background:var(--coral)}
+/* Layar hasil: bintang, poin, papan skor, dan daftar soal yang perlu diulang */
+.pk-stars{font-size:3.2rem;text-align:center;letter-spacing:.1em}
+.pk-final{font-size:2.4rem;font-weight:800;text-align:center}
+.pk-box{margin-top:14px}
+.pk-lb{list-style:none;padding:0;margin:8px 0 0}
+.pk-lb li{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-radius:12px;background:var(--bg);margin-bottom:6px;font-weight:700}
+.pk-lb li.me{background:var(--sun);color:var(--onsun)}
+.pk-name{font:inherit;width:100%;padding:12px;border-radius:14px;border:3px solid var(--line);background:var(--surface);color:var(--ink);margin:8px 0 12px}
+.pk-review{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.pk-review b{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:6px 10px}
+/* Tombol jawaban bergetar sedikit saat salah (hanya jika perangkat mengizinkan animasi) */
+@media (prefers-reduced-motion:no-preference){.opt.pk-shake{animation:pkshake .35s}@keyframes pkshake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){.opt.ok,.card.done{animation:pop .3s}@keyframes pop{50%{transform:scale(1.08)}}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Asah Otak Seru</h1><div class="score" aria-live="polite">⭐ <span id="score">0</span></div></header>
+<p class="hint" id="mhint">Pilih permainan. Level naik otomatis setiap kali kamu menjawab benar.</p>
+<div class="menu" id="menu"></div>
+
+<section class="panel" id="pola">
+<h2>Pola Ajaib</h2><p class="hint">Lihat polanya. Gambar apa yang ada di tanda tanya?</p>
+<div class="info"><span>Level <b id="pl">1</b></span><span>Benar beruntun <b id="ps">0</b></span></div>
+<div class="row" id="prow"></div><div class="opts" id="popts"></div>
+<p class="msg" id="pmsg"></p><button class="next" id="pnext" hidden>Lanjut</button>
+</section>
+
+<section class="panel" id="memori" hidden>
+<h2>Kartu Kembar</h2><p class="hint">Buka dua kartu. Temukan semua pasangan yang sama.</p>
+<div class="info"><span>Level <b id="ml">1</b></span><span>Langkah <b id="mm">0</b></span></div>
+<div class="grid" id="mgrid"></div>
+<p class="msg" id="mmsg"></p><button class="next" id="mnext" hidden>Main lagi</button>
+</section>
+
+<section class="panel" id="angka" hidden>
+<h2>Angka Hilang</h2><p class="hint">Cari aturan deretnya. Angka berapa yang hilang?</p>
+<div class="info"><span>Level <b id="al">1</b></span><span>Benar beruntun <b id="as">0</b></span></div>
+<div class="row" id="arow"></div><div class="opts" id="aopts"></div>
+<p class="msg" id="amsg"></p><button class="next" id="anext" hidden>Lanjut</button>
+</section>
+
+<section class="panel" id="beda" hidden>
+<h2>Mana yang Beda</h2><p class="hint">Satu gambar berasal dari kelompok lain. Ketuk yang berbeda.</p>
+<div class="info"><span>Level <b id="bl">1</b></span><span>Benar beruntun <b id="bs">0</b></span></div>
+<div class="opts" id="bopts" style="margin-top:16px"></div>
+<p class="msg" id="bmsg"></p><button class="next" id="bnext" hidden>Lanjut</button>
+</section>
+
+<section class="panel" id="hitung" hidden>
+<h2>Hitung Cepat</h2><p class="hint">Hitung dalam hati, lalu pilih jawabannya.</p>
+<div class="info"><span>Level <b id="hl">1</b></span><span>Benar beruntun <b id="hs">0</b></span></div>
+<div class="row" id="hrow"></div><div class="opts" id="hopts"></div>
+<p class="msg" id="hmsg"></p><button class="next" id="hnext" hidden>Lanjut</button>
+</section>
+
+<section class="panel" id="urut" hidden>
+<h2>Urutkan Angka</h2><p class="hint" id="uhint"></p>
+<div class="info"><span>Level <b id="ul">1</b></span><span>Benar beruntun <b id="us">0</b></span></div>
+<div class="opts" id="uopts" style="margin-top:16px"></div>
+<p class="msg" id="umsg"></p><button class="next" id="unext" hidden>Lanjut</button>
+</section>
+<section class="panel" id="ingat" hidden>
+<h2>Ingat Urutan</h2><p class="hint">Perhatikan warna yang menyala, lalu ketuk dengan urutan yang sama.</p>
+<div class="info"><span>Level <b id="gl">1</b></span><span>Panjang urutan <b id="gn">3</b></span></div>
+<div class="pads" id="pads"></div>
+<p class="msg" id="gmsg"></p><button class="next" id="gnext">Mulai</button>
+</section>
+
+<section class="panel" id="gambar" hidden>
+<h2>Hitung Gambar</h2><p class="hint" id="cq"></p>
+<div class="info"><span>Level <b id="cl">1</b></span><span>Benar beruntun <b id="cs">0</b></span></div>
+<div class="row" id="crow"></div><div class="opts" id="copts"></div>
+<p class="msg" id="cmsg"></p><button class="next" id="cnext" hidden>Lanjut</button>
+</section>
+
+<section class="panel" id="kata" hidden>
+<h2>Susun Kata</h2><p class="hint">Ketuk huruf satu per satu untuk menyusun sebuah kata.</p>
+<div class="info"><span>Level <b id="kl">1</b></span><span>Benar beruntun <b id="ks">0</b></span></div>
+<div class="row" id="kslots"></div><div class="opts" id="kopts"></div>
+<p class="msg" id="kmsg"></p><button class="next" id="kclear">Ulangi huruf</button><button class="next" id="knext" hidden>Lanjut</button>
+</section>
+
+<section class="panel" id="banding" hidden>
+<h2>Bandingkan</h2><p class="hint">Pilih tanda yang tepat: lebih kecil (&lt;), sama dengan (=), atau lebih besar (&gt;).</p>
+<div class="info"><span>Level <b id="vl">1</b></span><span>Benar beruntun <b id="vs">0</b></span></div>
+<div class="row" id="vrow"></div><div class="opts" id="vopts"></div>
+<p class="msg" id="vmsg"></p><button class="next" id="vnext" hidden>Lanjut</button>
+</section>
+<section class="panel" id="hilang" hidden>
+<h2>Apa yang Hilang</h2><p class="hint" id="yhint"></p>
+<div class="info"><span>Level <b id="yl">1</b></span><span>Benar beruntun <b id="ys">0</b></span></div>
+<div class="row" id="yrow"></div><div class="opts" id="yopts"></div>
+<p class="msg" id="ymsg"></p><button class="next" id="ynext" hidden>Lanjut</button>
+</section>
+
+<section class="panel" id="huruf" hidden>
+<h2>Lengkapi Huruf</h2><p class="hint">Satu huruf hilang dari kata ini. Pilih huruf yang tepat.</p>
+<div class="info"><span>Level <b id="zl">1</b></span><span>Benar beruntun <b id="zs">0</b></span></div>
+<div class="row" id="zrow"></div><div class="opts" id="zopts"></div>
+<p class="msg" id="zmsg"></p><button class="next" id="znext" hidden>Lanjut</button>
+</section>
+
+<section class="panel" id="lawan" hidden>
+<h2>Lawan Kata</h2><p class="hint">Pilih kata yang artinya berlawanan dengan kata di bawah ini.</p>
+<div class="info"><span>Level <b id="wl">1</b></span><span>Benar beruntun <b id="ws">0</b></span></div>
+<div class="row" id="wrow"></div><div class="opts" id="wopts"></div>
+<p class="msg" id="wmsg"></p><button class="next" id="wnext" hidden>Lanjut</button>
+</section>
+
+<section class="panel" id="cerita" hidden>
+<h2>Cerita Hitung</h2><p class="hint" id="qhint"></p>
+<div class="info"><span>Level <b id="ql">1</b></span><span>Benar beruntun <b id="qs">0</b></span></div>
+<div class="opts" id="qopts" style="margin-top:16px"></div>
+<p class="msg" id="qmsg"></p><button class="next" id="qnext" hidden>Lanjut</button>
+</section>
+
+<section class="panel" id="unik" hidden>
+<h2>Cari Si Unik</h2><p class="hint">Satu gambar sedikit berbeda dari yang lain. Temukan dan ketuk!</p>
+<div class="info"><span>Level <b id="nl">1</b></span><span>Benar beruntun <b id="ns">0</b></span></div>
+<div class="grid" id="ngrid"></div>
+<p class="msg" id="nmsg"></p><button class="next" id="nnext" hidden>Lanjut</button>
+</section>
+<!-- ===== Game baru: Petualangan Perkalian. Terdiri dari 3 layar: pengaturan, bermain, hasil ===== -->
+<section class="panel" id="kali" hidden>
+<h2>Petualangan Perkalian</h2>
+<p class="hint">Bantu Rubi si rubah menjawab 10 soal perkalian. Makin cepat menjawab, makin banyak poin!</p>
+
+<!-- LAYAR 1: anak memilih tabel perkalian dan batas waktu -->
+<div id="pkSetup">
+  <span class="pk-label">Pilih tabel yang mau dilatih (boleh lebih dari satu)</span>
+  <div class="pk-chips" id="pkChips"></div>
+  <button class="pk-link" id="pkAll" type="button">Pilih semua</button>
+  <button class="pk-link" id="pkNone" type="button">Hapus pilihan</button>
+  <span class="pk-label">Waktu tiap soal</span>
+  <div class="pk-chips pk-t3" id="pkTime"></div>
+  <p class="msg" id="pkPicked"></p>
+  <button class="next" id="pkStart" type="button">Mulai main</button>
+  <p class="msg" id="pkBest"></p>
+  <p class="msg"><button class="pk-link" id="pkSnd" type="button">Suara: nyala</button></p>
+  <div class="pk-box" id="pkBoxM" hidden><b>Papan skor</b><ol class="pk-lb" id="pkLbM"></ol></div>
+</div>
+
+<!-- LAYAR 2: soal ditampilkan satu per satu dengan 4 pilihan jawaban -->
+<div id="pkPlay" hidden>
+  <div class="info"><span id="pkNo">Soal 1 dari 10</span><span id="pkTl">⏱ 10</span><span id="pkSc">⭐ 0</span></div>
+  <div class="pk-bar"><i id="pkPg"></i></div>
+  <div class="pk-tbar" id="pkTb"><i id="pkTi"></i></div>
+  <div class="row"><div class="tile big" id="pkQ" aria-live="polite">2 × 3 = ?</div></div>
+  <div class="opts" id="pkOpts"></div>
+  <p class="msg" id="pkMsg"></p>
+</div>
+
+<!-- LAYAR 3: hasil ronde (bintang, poin, simpan nama, soal yang perlu diulang) -->
+<div id="pkEnd" hidden>
+  <div class="pk-stars" id="pkStars" aria-hidden="true"></div>
+  <div class="pk-final" id="pkFinal"></div>
+  <p class="msg" id="pkVerdict"></p>
+  <div class="pk-box" id="pkSaveBox"><b>Tulis namamu</b>
+    <input class="pk-name" id="pkName" maxlength="12" placeholder="Nama pemain" autocomplete="off">
+    <button class="next" id="pkSave" type="button">Simpan ke papan skor</button></div>
+  <div class="pk-box" id="pkBoxE" hidden><b>Papan skor</b><ol class="pk-lb" id="pkLbE"></ol></div>
+  <div class="pk-box" id="pkRev" hidden><b>Yuk, ulangi yang ini:</b><div class="pk-review" id="pkRevList"></div></div>
+  <button class="next" id="pkAgain" type="button">Main lagi</button>
+  <button class="next" id="pkHome" type="button">Pilih tabel lain</button>
+</div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const GOOD=['Hebat!','Pintar sekali!','Tepat!','Keren!','Mantap!'];
+let score=0;
+const add=n=>{score+=n;$('score').textContent=score};
+
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  ['pola','memori','angka','beda','hitung','urut'].forEach(g=>$(g).hidden=g!==b.dataset.g);
+});
+
+/* Generic multiple choice round */
+function makeOpts(box,options,answer,st,msg,next,gain){
+  box.innerHTML='';
+  options.forEach(o=>{
+    const b=document.createElement('button');b.className='opt';b.textContent=o;
+    b.onclick=()=>{
+      if(st.locked)return;
+      if(String(o)===String(answer)){
+        st.locked=true;b.classList.add('ok');st.streak++;st.right=(st.right||0)+1;const old=st.level;st.level=1+Math.floor(st.right/3);
+        const g=st.streak>1?gain+2:gain;add(g);
+        msg.textContent=GOOD[rnd(0,GOOD.length-1)]+' +'+g+(st.level>old?' Naik ke Level '+st.level+'!':'');next.hidden=false;next.focus();
+      }else{
+        b.classList.add('no');b.disabled=true;st.streak=0;msg.textContent='Belum tepat. Coba lagi!';
+      }
+      st.ui();
+    };
+    box.appendChild(b);
+  });
+}
+
+/* Pola Ajaib */
+const SYM=['🍎','🍌','🍇','⭐','🔵','🔺','🐟','🐱','🌙','🍓','🚗','🌼'];
+const PAT=[['AB','AAB'],['ABC','AABB','ABB'],['ABCD','AABC','ABAC'],['AABBC','ABCBA','ABBCCC']];
+const P={streak:0,level:1,locked:false,ui(){$('pl').textContent=this.level;$('ps').textContent=this.streak}};
+function pola(){
+  P.locked=false;$('pmsg').textContent='';$('pnext').hidden=true;
+  const list=PAT[Math.min(P.level,4)-1],pat=list[rnd(0,list.length-1)];
+  const letters=[...new Set(pat)],syms=shuf(SYM),map={};
+  letters.forEach((l,i)=>map[l]=syms[i]);
+  const len=pat.length*2+(pat.length<3?3:1)+Math.max(0,P.level-4);
+  const seq=[];for(let i=0;i<len;i++)seq.push(map[pat[i%pat.length]]);
+  const ans=seq.pop();
+  $('prow').innerHTML=seq.map(s=>`<div class="tile">${s}</div>`).join('')+'<div class="tile q">?</div>';
+  const others=shuf(syms.filter(s=>s!==ans)).slice(0,3);
+  makeOpts($('popts'),shuf([ans,...others]),ans,P,$('pmsg'),$('pnext'),10);
+  P.ui();
+}
+$('pnext').onclick=pola;
+
+/* Angka Hilang */
+const A={streak:0,level:1,locked:false,ui(){$('al').textContent=this.level;$('as').textContent=this.streak}};
+function deret(l){
+  const s=[],start=rnd(1,9);
+  if(l===1){const d=rnd(2,5);for(let i=0;i<6;i++)s.push(start+d*i)}
+  else if(l===2){const d=rnd(3,10);for(let i=0;i<6;i++)s.push(start*2+d*i);if(Math.random()<.4)s.reverse()}
+  else if(l===3){const a=rnd(2,4),b=rnd(1,3);let v=start;for(let i=0;i<6;i++){s.push(v);v+=i%2?b:a}}
+  else{const m=rnd(2,3);let v=rnd(1,3);for(let i=0;i<6;i++){s.push(v);v*=m}}
+  return s;
+}
+function angka(){
+  A.locked=false;$('amsg').textContent='';$('anext').hidden=true;
+  const s=deret(A.level),h=rnd(2,5),ans=s[h];
+  $('arow').innerHTML=s.map((n,i)=>i===h?'<div class="tile q">?</div>':`<div class="tile">${n}</div>`).join('');
+  const set=new Set([ans]);
+  while(set.size<4){const d=rnd(1,4)*(Math.random()<.5?-1:1);const c=ans+d;if(c>0)set.add(c)}
+  makeOpts($('aopts'),shuf([...set]),ans,A,$('amsg'),$('anext'),10);
+  A.ui();
+}
+$('anext').onclick=angka;
+
+/* Kartu Kembar */
+const MEM=['🦁','🐘','🐢','🦋','🐙','🐧','🦊','🐝','🐬','🦉'];
+MEM.push('🐞','🦀','🐼','🦒');const M={level:1};
+let first=null,lock=false,moves=0,found=0,pairs=0;
+function memori(){
+  pairs=Math.min(12,6+2*(M.level-1));
+  const cols=pairs===6?3:4;
+  moves=0;found=0;first=null;lock=false;
+  $('mm').textContent=0;$('ml').textContent=M.level;$('mmsg').textContent='';$('mnext').hidden=true;
+  const g=$('mgrid');g.dataset.c=cols;g.style.gridTemplateColumns=`repeat(${cols},1fr)`;g.innerHTML='';
+  shuf(shuf(MEM).slice(0,pairs).flatMap(x=>[x,x])).forEach(sym=>{
+    const c=document.createElement('button');c.className='card';c.textContent='?';c.dataset.s=sym;
+    c.setAttribute('aria-label','Kartu tertutup');
+    c.onclick=()=>flip(c);g.appendChild(c);
+  });
+}
+function flip(c){
+  if(lock||c===first||c.classList.contains('done'))return;
+  c.classList.add('open');c.textContent=c.dataset.s;
+  if(!first){first=c;return}
+  moves++;$('mm').textContent=moves;lock=true;
+  const a=first,b=c;first=null;
+  if(a.dataset.s===b.dataset.s){
+    a.classList.add('done');b.classList.add('done');lock=false;found++;
+    if(found===pairs){
+      const pts=Math.max(5,25-(moves-pairs));add(pts);M.level++;
+      $('mmsg').textContent='Semua pasangan ketemu! +'+pts+' Siap ke Level '+M.level+'?';$('mnext').hidden=false;$('mnext').focus();
+    }
+  }else{
+    setTimeout(()=>{[a,b].forEach(x=>{x.classList.remove('open');x.textContent='?'});lock=false},800);
+  }
+}
+$('mnext').onclick=memori;
+
+/* Mana yang Beda */
+const CAT=[['🐶','🐱','🐰','🐻','🦁','🐘','🐸','🐵'],['🍎','🍌','🍇','🍓','🍊','🍉','🍍','🍒'],['🚗','🚌','🚲','✈️','🚢','🚂','🚁','🛵'],['⚽','🏀','🎾','🏐','🏈','🎱','🥎','🏓']];
+const B={streak:0,level:1,locked:false,ui(){$('bl').textContent=this.level;$('bs').textContent=this.streak}};
+function beda(){
+  B.locked=false;$('bmsg').textContent='';$('bnext').hidden=true;
+  const n=Math.min(8,4+2*Math.floor((B.level-1)/2)),c=shuf([0,1,2,3]);
+  const main=shuf(CAT[c[0]]).slice(0,n-1),odd=shuf(CAT[c[1]])[0];
+  makeOpts($('bopts'),shuf([...main,odd]),odd,B,$('bmsg'),$('bnext'),10);B.ui();
+}
+$('bnext').onclick=beda;
+
+/* Hitung Cepat */
+const H={streak:0,level:1,locked:false,ui(){$('hl').textContent=this.level;$('hs').textContent=this.streak}};
+function hitung(){
+  H.locked=false;$('hmsg').textContent='';$('hnext').hidden=true;
+  const l=H.level;let a,b,q,ans;
+  if(l===1){a=rnd(1,6);b=rnd(1,5);q=a+' + '+b;ans=a+b}
+  else if(l===2){if(Math.random()<.5){a=rnd(5,14);b=rnd(3,9);q=a+' + '+b;ans=a+b}else{a=rnd(10,20);b=rnd(2,9);q=a+' − '+b;ans=a-b}}
+  else if(l===3){a=rnd(2,5);b=rnd(2,9);q=a+' × '+b;ans=a*b}
+  else if(Math.random()<.5){a=rnd(6,9+H.level);b=rnd(3,9+Math.floor(H.level/2));q=a+' × '+b;ans=a*b}
+  else{b=rnd(3,9);ans=rnd(3,9+H.level);a=b*ans;q=a+' ÷ '+b}
+  $('hrow').innerHTML='<div class="tile big">'+q+' = ?</div>';
+  const set=new Set([ans]);
+  while(set.size<4){const c=ans+rnd(1,4)*(Math.random()<.5?-1:1);if(c>=0)set.add(c)}
+  makeOpts($('hopts'),shuf([...set]),ans,H,$('hmsg'),$('hnext'),10);H.ui();
+}
+$('hnext').onclick=hitung;
+
+/* Urutkan Angka */
+const U={streak:0,level:1,ui(){$('ul').textContent=this.level;$('us').textContent=this.streak}};
+function urut(){
+  $('umsg').textContent='';$('unext').hidden=true;
+  const n=Math.min(9,3+Math.ceil(U.level/2)),max=15+U.level*20,set=new Set();
+  while(set.size<n)set.add(rnd(1,max));
+  const desc=U.level>=3&&Math.random()<.5;
+  const order=[...set].sort((x,y)=>desc?y-x:x-y);let idx=0;
+  $('uhint').textContent=desc?'Ketuk angka dari yang terbesar ke yang terkecil.':'Ketuk angka dari yang terkecil ke yang terbesar.';
+  const box=$('uopts');box.innerHTML='';
+  shuf([...set]).forEach(v=>{
+    const b=document.createElement('button');b.className='opt';b.textContent=v;
+    b.onclick=()=>{
+      if(b.classList.contains('ok'))return;
+      if(v===order[idx]){
+        b.classList.add('ok');idx++;
+        if(idx===order.length){
+          U.streak++;U.right=(U.right||0)+1;const oldL=U.level;U.level=1+Math.floor(U.right/3);
+          const g=U.streak>1?12:10;add(g);
+          $('umsg').textContent=GOOD[rnd(0,GOOD.length-1)]+' +'+g+(U.level>oldL?' Naik ke Level '+U.level+'!':'');$('unext').hidden=false;$('unext').focus();
+        }
+      }else{
+        U.streak=0;$('umsg').textContent='Bukan yang itu. Coba lagi!';
+        b.classList.add('no');setTimeout(()=>b.classList.remove('no'),500);
+      }
+      U.ui();
+    };
+    box.appendChild(b);
+  });
+  U.ui();
+}
+$('unext').onclick=urut;
+
+/* Hitung Gambar */
+const C={streak:0,level:1,right:0,locked:false,ui(){$('cl').textContent=this.level;$('cs').textContent=this.streak}};
+function gambar(){
+  C.locked=false;$('cmsg').textContent='';$('cnext').hidden=true;
+  const s=shuf(SYM),t=s[0],n=Math.min(14,2+C.level),d=C.level>=3?Math.min(10,C.level-1):0;
+  const items=shuf([...Array(n).fill(t),...Array.from({length:d},(_,i)=>s[1+i%3])]);
+  $('cq').innerHTML='Ada berapa gambar ini?<span class="qe">'+t+'</span>';
+  $('crow').innerHTML=items.map(e=>`<div class="tile">${e}</div>`).join('');
+  const set=new Set([n]);
+  while(set.size<4){const x=n+rnd(1,3)*(Math.random()<.5?-1:1);if(x>0)set.add(x)}
+  makeOpts($('copts'),shuf([...set]),n,C,$('cmsg'),$('cnext'),10);C.ui();
+}
+$('cnext').onclick=gambar;
+
+/* Bandingkan */
+const V={streak:0,level:1,right:0,locked:false,ui(){$('vl').textContent=this.level;$('vs').textContent=this.streak}};
+function bandingkan(){
+  V.locked=false;$('vmsg').textContent='';$('vnext').hidden=true;
+  const l=V.level;
+  const gen=()=>{if(l<2){const n=rnd(1,10);return[''+n,n]}if(l<4){const a=rnd(1,6+l*3),b=rnd(1,6+l*3);return[a+' + '+b,a+b]}const a=rnd(2,5+Math.floor(l/2)),b=rnd(2,9);return[a+' × '+b,a*b]};
+  let [t1,v1]=gen(),[t2,v2]=gen();
+  if(Math.random()<.3){v2=v1;const c=rnd(1,Math.max(1,v1-1));t2=v1<2?''+v1:c+' + '+(v1-c)}
+  $('vrow').innerHTML=`<div class="tile big">${t1}</div><div class="tile big q">?</div><div class="tile big">${t2}</div>`;
+  makeOpts($('vopts'),['<','=','>'],v1<v2?'<':v1>v2?'>':'=',V,$('vmsg'),$('vnext'),10);V.ui();
+}
+$('vnext').onclick=bandingkan;
+
+/* Susun Kata */
+const W=[['buku','kuda','roti','meja','bola','sapi','baju','ikan'],['bunga','pagar','kapal','rumah','mobil','tikus','pasir'],['kucing','pensil','burung','sepatu','gelang'],['sekolah','jendela','kelinci','belajar','pelangi','bermain'],['matahari','komputer','berenang','pelajaran']];
+const K={streak:0,level:1,right:0,ui(){$('kl').textContent=this.level;$('ks').textContent=this.streak}};
+let kword='',kbuilt=[];
+function drawK(){$('kslots').innerHTML=kword.split('').map((_,i)=>`<div class="tile${kbuilt[i]?'':' q'}">${kbuilt[i]?kbuilt[i].ch.toUpperCase():'&nbsp;'}</div>`).join('')}
+function resetK(){kbuilt.forEach(x=>x.b.disabled=false);kbuilt=[];drawK()}
+function kata(){
+  $('kmsg').textContent='';$('knext').hidden=true;$('kclear').hidden=false;
+  const g=W[Math.min(4,K.level-1)];kword=g[rnd(0,g.length-1)];kbuilt=[];
+  let l;do{l=shuf(kword.split(''))}while(l.join('')===kword);
+  const box=$('kopts');box.innerHTML='';
+  l.forEach(ch=>{
+    const b=document.createElement('button');b.className='opt';b.textContent=ch.toUpperCase();
+    b.onclick=()=>{b.disabled=true;kbuilt.push({ch,b});drawK();if(kbuilt.length===kword.length)checkK()};
+    box.appendChild(b);
+  });
+  drawK();K.ui();
+}
+function checkK(){
+  if(kbuilt.map(x=>x.ch).join('')===kword){
+    K.streak++;K.right++;const old=K.level;K.level=1+Math.floor(K.right/3);
+    const g=K.streak>1?12:10;add(g);
+    $('kmsg').textContent=GOOD[rnd(0,GOOD.length-1)]+' +'+g+(K.level>old?' Naik ke Level '+K.level+'!':'');
+    $('kclear').hidden=true;$('knext').hidden=false;$('knext').focus();
+  }else{
+    K.streak=0;$('kmsg').textContent='Belum tepat. Coba susun lagi!';resetK();
+  }
+  K.ui();
+}
+$('kclear').onclick=resetK;
+$('knext').onclick=kata;
+
+/* Ingat Urutan */
+const COL=['#FF6B57','#FFC93C','#1FAE8C','#4A90E2'];
+const G={level:1,ui(){$('gl').textContent=this.level;$('gn').textContent=2+this.level}};
+let gseq=[],gi=0,gbusy=true,gtok=0;
+function lit(i,ms){const b=$('pads').children[i];b.classList.add('lit');setTimeout(()=>b.classList.remove('lit'),ms)}
+function ingatInit(){
+  const box=$('pads');box.innerHTML='';
+  COL.forEach((c,i)=>{const b=document.createElement('button');b.className='pad';b.style.background=c;b.setAttribute('aria-label','Warna '+(i+1));b.onclick=()=>padTap(i);box.appendChild(b)});
+  G.ui();
+}
+function ingat(){
+  const tok=++gtok;gbusy=true;gi=0;$('gnext').hidden=true;$('gmsg').textContent='Perhatikan urutannya…';
+  gseq=Array.from({length:2+G.level},()=>rnd(0,3));G.ui();
+  const sp=Math.max(350,750-G.level*25);
+  gseq.forEach((v,k)=>setTimeout(()=>{if(tok===gtok)lit(v,sp*.6)},700+k*sp));
+  setTimeout(()=>{if(tok===gtok){gbusy=false;$('gmsg').textContent='Giliranmu!'}},700+gseq.length*sp);
+}
+function padTap(i){
+  if(gbusy)return;lit(i,200);
+  if(i===gseq[gi]){
+    gi++;
+    if(gi===gseq.length){
+      gbusy=true;const g=10+G.level;add(g);G.level++;G.ui();
+      $('gmsg').textContent=GOOD[rnd(0,GOOD.length-1)]+' +'+g+' Naik ke Level '+G.level+'!';
+      $('gnext').textContent='Level berikutnya';$('gnext').hidden=false;$('gnext').focus();
+    }
+  }else{
+    gbusy=true;$('gmsg').textContent='Belum tepat. Coba lagi!';$('gnext').textContent='Ulangi';$('gnext').hidden=false;
+  }
+}
+$('gnext').onclick=ingat;
+
+/* Menu */
+const GAMES=[
+['pola','🧩','Pola Ajaib','Temukan gambar berikutnya',P],
+['memori','🃏','Kartu Kembar','Cari pasangan kartu',M],
+['angka','🔢','Angka Hilang','Cari angka yang hilang',A],
+['beda','🔍','Mana yang Beda','Temukan yang berbeda',B],
+['hitung','➕','Hitung Cepat','Tambah, kurang, kali, bagi',H],
+['urut','📶','Urutkan Angka','Ketuk dari kecil ke besar',U],
+['ingat','🎵','Ingat Urutan','Ulangi urutan warna',G],
+['gambar','🍎','Hitung Gambar','Berapa jumlahnya?',C],
+['kata','🔤','Susun Kata','Susun huruf jadi kata',K],
+['banding','⚖️','Bandingkan','Pilih tanda < = >',V]];
+/* Apa yang Hilang */
+const HL={streak:0,level:1,right:0,locked:false,ui(){$('yl').textContent=this.level;$('ys').textContent=this.streak}};
+let hltok=0;
+function hilang(){
+  const tok=++hltok;HL.locked=true;$('ymsg').textContent='';$('ynext').hidden=true;$('yopts').innerHTML='';
+  const n=Math.min(8,3+Math.ceil(HL.level/2)),s=shuf(SYM),items=s.slice(0,n),miss=items[rnd(0,n-1)];
+  $('yhint').textContent='Ingat semua gambar ini!';
+  $('yrow').innerHTML=items.map(e=>`<div class="tile">${e}</div>`).join('');
+  setTimeout(()=>{
+    if(tok!==hltok)return;
+    $('yhint').textContent='Gambar mana yang tadi ada, tapi sekarang hilang?';
+    $('yrow').innerHTML=shuf(items.filter(e=>e!==miss)).map(e=>`<div class="tile">${e}</div>`).join('');
+    HL.locked=false;
+    makeOpts($('yopts'),shuf([miss,...s.slice(n,n+3)]),miss,HL,$('ymsg'),$('ynext'),10);
+  },2500+n*500);
+  HL.ui();
+}
+$('ynext').onclick=hilang;
+
+/* Lengkapi Huruf */
+const HF={streak:0,level:1,right:0,locked:false,ui(){$('zl').textContent=this.level;$('zs').textContent=this.streak}};
+function huruf(){
+  HF.locked=false;$('zmsg').textContent='';$('znext').hidden=true;
+  const g=W[Math.min(4,HF.level-1)],w=g[rnd(0,g.length-1)],i=rnd(0,w.length-1),ans=w[i].toUpperCase();
+  $('zrow').innerHTML=w.split('').map((ch,k)=>`<div class="tile${k===i?' q':''}">${k===i?'?':ch.toUpperCase()}</div>`).join('');
+  const abc='ABCDEGHIJKLMNPRSTUY',set=new Set([ans]);
+  while(set.size<4)set.add(abc[rnd(0,abc.length-1)]);
+  makeOpts($('zopts'),shuf([...set]),ans,HF,$('zmsg'),$('znext'),10);HF.ui();
+}
+$('znext').onclick=huruf;
+
+/* Lawan Kata */
+const OPP=[['besar','kecil'],['panas','dingin'],['tinggi','rendah'],['siang','malam'],['atas','bawah'],['cepat','lambat'],['terang','gelap'],['dekat','jauh'],['kuat','lemah'],['ramai','sepi'],['basah','kering'],['berat','ringan'],['tebal','tipis'],['baru','lama'],['senang','sedih'],['rajin','malas'],['jujur','bohong'],['luas','sempit'],['kenyang','lapar'],['murah','mahal']];
+const LW={streak:0,level:1,right:0,locked:false,ui(){$('wl').textContent=this.level;$('ws').textContent=this.streak}};
+function lawan(){
+  LW.locked=false;$('wmsg').textContent='';$('wnext').hidden=true;
+  const pool=OPP.slice(0,Math.min(OPP.length,6+LW.level*2)),pr=pool[rnd(0,pool.length-1)],f=Math.random()<.5,w=f?pr[0]:pr[1],ans=f?pr[1]:pr[0];
+  $('wrow').innerHTML='<div class="tile big">'+w.toUpperCase()+'</div>';
+  const others=shuf(OPP.filter(p=>p!==pr).flat()).slice(0,3);
+  makeOpts($('wopts'),shuf([ans,...others]),ans,LW,$('wmsg'),$('wnext'),10);LW.ui();
+}
+$('wnext').onclick=lawan;
+
+/* Cerita Hitung */
+const NAMES=['Ani','Budi','Citra','Dodi','Eka','Fani'],ITEMS=['🍎','🍌','🍬','⚽','🚗','🌼'];
+const CR={streak:0,level:1,right:0,locked:false,ui(){$('ql').textContent=this.level;$('qs').textContent=this.streak}};
+function cerita(){
+  CR.locked=false;$('qmsg').textContent='';$('qnext').hidden=true;
+  const l=CR.level,nm=NAMES[rnd(0,5)],it=ITEMS[rnd(0,5)];let a,b,q,ans;
+  if(l<=2){a=rnd(1,4+l*2);b=rnd(1,4+l*2);q=nm+' punya '+a+' '+it+'. Lalu diberi '+b+' '+it+' lagi. Berapa '+it+' '+nm+' sekarang?';ans=a+b}
+  else if(l<=4){a=rnd(6,10+l*2);b=rnd(1,a-1);q=nm+' punya '+a+' '+it+'. '+nm+' memberikan '+b+' '+it+' kepada temannya. Berapa sisanya?';ans=a-b}
+  else{a=rnd(2,4+l);b=rnd(2,5);q='Ada '+a+' kotak. Setiap kotak berisi '+b+' '+it+'. Berapa jumlah semua '+it+'?';ans=a*b}
+  $('qhint').textContent=q;
+  const set=new Set([ans]);
+  while(set.size<4){const x=ans+rnd(1,4)*(Math.random()<.5?-1:1);if(x>=0)set.add(x)}
+  makeOpts($('qopts'),shuf([...set]),ans,CR,$('qmsg'),$('qnext'),10);CR.ui();
+}
+$('qnext').onclick=cerita;
+
+/* Cari Si Unik */
+const PRS=[['🍎','🍅'],['🐶','🐺'],['🌕','🌝'],['😀','😃'],['🔵','🟣'],['🐻','🐼'],['🟥','🟧'],['⭐','🌟'],['🍊','🍑'],['🐱','🐯']];
+const UN={streak:0,level:1,right:0,ui(){$('nl').textContent=this.level;$('ns').textContent=this.streak}};
+function unik(){
+  $('nmsg').textContent='';$('nnext').hidden=true;
+  const cols=Math.min(6,3+Math.floor((UN.level-1)/2)),rows=Math.min(7,3+Math.floor(UN.level/2)),n=cols*rows;
+  const p=PRS[rnd(0,PRS.length-1)],sw=Math.random()<.5,a=sw?p[1]:p[0],b=sw?p[0]:p[1],odd=rnd(0,n-1);
+  let done=false;
+  const g=$('ngrid');g.style.gridTemplateColumns='repeat('+cols+',1fr)';g.innerHTML='';
+  for(let i=0;i<n;i++){
+    const t=document.createElement('button');t.className='cell';t.textContent=i===odd?b:a;
+    t.onclick=()=>{
+      if(done)return;
+      if(i===odd){
+        done=true;t.classList.add('ok');UN.streak++;UN.right++;const old=UN.level;UN.level=1+Math.floor(UN.right/3);
+        const gn=UN.streak>1?12:10;add(gn);
+        $('nmsg').textContent=GOOD[rnd(0,GOOD.length-1)]+' +'+gn+(UN.level>old?' Naik ke Level '+UN.level+'!':'');
+        $('nnext').hidden=false;$('nnext').focus();
+      }else{
+        UN.streak=0;$('nmsg').textContent='Bukan yang itu. Cari lagi!';
+        t.classList.add('no');setTimeout(()=>t.classList.remove('no'),500);
+      }
+      UN.ui();
+    };
+    g.appendChild(t);
+  }
+  UN.ui();
+}
+$('nnext').onclick=unik;
+
+GAMES.push(
+['hilang','🕵️','Apa yang Hilang','Ingat gambar, cari yang hilang',HL],
+['huruf','✏️','Lengkapi Huruf','Cari huruf yang hilang',HF],
+['lawan','↔️','Lawan Kata','Cari kata yang berlawanan',LW],
+['cerita','📖','Cerita Hitung','Soal cerita sederhana',CR],
+['unik','🎯','Cari Si Unik','Temukan yang sedikit berbeda',UN]);
+/* ============================================================
+   GAME BARU: PETUALANGAN PERKALIAN
+   Semua nama variabel dan fungsi diawali "pk" supaya tidak
+   bentrok dengan game lain di file ini.
+   ============================================================ */
+
+// Objek ini dibaca oleh menu untuk menampilkan tulisan "Level ..." di kartu game.
+// Level naik 1 setiap kali satu ronde dijawab benar 7 soal atau lebih.
+const PK={level:1};
+
+const PK_N=10;            // jumlah soal dalam satu ronde
+const pkSel=new Set();    // tabel yang dipilih anak, misalnya 2, 3, 7
+let pkT=10;               // batas waktu tiap soal (detik): 5, 10, atau 15
+let pkQs=[];              // soal ronde ini, bentuknya [[a,b],[a,b],...]
+let pkIdx=0;              // nomor soal yang sedang tampil (mulai dari 0)
+let pkScore=0;            // poin ronde ini
+let pkRight=0;            // jumlah jawaban benar ronde ini
+let pkStreak=0;           // jumlah jawaban benar berturut-turut
+let pkWrong=[];           // soal yang salah atau waktunya habis (untuk diulang)
+let pkLocked=false;       // true = soal sudah dijawab, tombol tidak boleh diketuk lagi
+let pkTEnd=0;             // jam (milidetik) kapan waktu soal ini habis
+let pkTimer=null;         // penghitung waktu (setInterval)
+let pkTok=0;              // "tiket" ronde; naik setiap ronde dihentikan, supaya jadwal lama dibatalkan
+let pkSound=true;         // suara nyala (true) atau mati (false)
+let pkCtx=null;           // mesin suara browser, dibuat saat pertama dipakai
+let pkBest=0;             // skor tertinggi yang pernah diraih
+let pkBoard=[];           // papan skor: [{n:'nama',p:poin},...]
+
+/* ---- Penyimpanan di perangkat (localStorage) ---- */
+// Membaca data tersimpan; kalau gagal (mis. penyimpanan dimatikan) hasilnya kosong
+function pkGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+// Menyimpan data; kalau gagal tidak apa-apa, game tetap jalan
+function pkSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+// Memuat skor tertinggi dan papan skor yang pernah disimpan
+function pkLoad(){
+  pkBest=+pkGet('asahotak-kali-poin')||0;
+  try{pkBoard=JSON.parse(pkGet('asahotak-kali-papan')||'[]')}catch(e){pkBoard=[]}
+  if(!Array.isArray(pkBoard))pkBoard=[];
+}
+
+/* ---- Pindah layar di dalam game (pkSetup / pkPlay / pkEnd) ---- */
+// Menampilkan satu layar saja, dua layar lainnya disembunyikan
+function pkShow(id){
+  ['pkSetup','pkPlay','pkEnd'].forEach(x=>$(x).hidden=x!==id);
+  window.scrollTo(0,0);
+}
+
+/* ---- Suara sederhana: bunyi "bip" dengan nada (f) dan lama (d) detik ---- */
+function pkBeep(f,d,type){
+  if(!pkSound)return;
+  try{
+    pkCtx=pkCtx||new (window.AudioContext||window.webkitAudioContext)();
+    const o=pkCtx.createOscillator(),g=pkCtx.createGain();
+    o.type=type||'sine';o.frequency.value=f;g.gain.value=.12;
+    o.connect(g);g.connect(pkCtx.destination);o.start();
+    g.gain.exponentialRampToValueAtTime(.0001,pkCtx.currentTime+d);o.stop(pkCtx.currentTime+d);
+  }catch(e){}
+}
+
+/* ---- Layar pengaturan ---- */
+// Menggambar tombol angka 1 sampai 10; ketuk untuk memilih atau membatalkan
+function pkDrawChips(){
+  const box=$('pkChips');box.innerHTML='';
+  for(let n=1;n<=10;n++){
+    const b=document.createElement('button');
+    b.className='pk-chip';b.type='button';b.textContent=n;
+    b.setAttribute('aria-pressed',pkSel.has(n));
+    b.setAttribute('aria-label','Tabel '+n);
+    b.onclick=()=>{
+      if(pkSel.has(n))pkSel.delete(n);else pkSel.add(n);
+      b.setAttribute('aria-pressed',pkSel.has(n));
+      pkSync();pkBeep(520,.06);
+    };
+    box.appendChild(b);
+  }
+}
+// Menggambar tombol pilihan waktu: 5, 10, atau 15 detik
+function pkDrawTime(){
+  const box=$('pkTime');box.innerHTML='';
+  [5,10,15].forEach(t=>{
+    const b=document.createElement('button');
+    b.className='pk-chip';b.type='button';b.textContent=t+' detik';
+    b.setAttribute('aria-pressed',pkT===t);
+    b.onclick=()=>{pkT=t;pkDrawTime();pkBeep(520,.06)};
+    box.appendChild(b);
+  });
+}
+// Memperbarui tulisan "Soal hanya dari tabel ..." dan mengaktifkan/menonaktifkan tombol Mulai
+function pkSync(){
+  const t=[...pkSel].sort((a,b)=>a-b);
+  $('pkPicked').textContent=t.length?'Soal hanya dari tabel '+t.join(', '):'Pilih minimal satu tabel dulu';
+  $('pkStart').disabled=t.length===0;
+}
+// Menampilkan skor tertinggi (kosong jika belum pernah main)
+function pkBestText(){$('pkBest').textContent=pkBest?'Skor tertinggimu: '+pkBest+' poin':''}
+
+/* ---- Membuat soal dan pilihan jawaban ---- */
+// Mengumpulkan semua pasangan (tabel x 1..10), mengacaknya, lalu mengambil 10 soal pertama
+function pkMakeQuestions(){
+  const pool=[];
+  pkSel.forEach(a=>{for(let b=1;b<=10;b++)pool.push([a,b])});
+  return shuf(pool).slice(0,PK_N);
+}
+// Membuat 4 pilihan jawaban: 1 yang benar + 3 pengecoh yang "mirip" (mis. hasil tabel sebelah)
+function pkMakeOptions(a,b){
+  const ans=a*b,used=new Set([ans]),o=[ans];
+  const cand=[ans+a,ans-a,ans+b,ans-b,ans+1,ans-1,ans+10,ans-10,(a+1)*b,a*(b+1),(a-1)*b,a*(b-1)];
+  shuf(cand).forEach(v=>{if(o.length<4&&v>0&&!used.has(v)){used.add(v);o.push(v)}});
+  let extra=ans+2;                       // jaga-jaga kalau pengecoh kurang dari 3
+  while(o.length<4){if(!used.has(extra)){used.add(extra);o.push(extra)}extra++}
+  return shuf(o);
+}
+
+/* ---- Jalannya ronde ---- */
+// Memulai ronde baru: reset semua angka, buat 10 soal, tampilkan soal pertama
+function pkStart(){
+  if(pkSel.size===0)return;
+  pkStop();
+  pkQs=pkMakeQuestions();pkIdx=0;pkScore=0;pkRight=0;pkStreak=0;pkWrong=[];
+  pkShow('pkPlay');pkAsk();
+}
+// Menampilkan soal ke-pkIdx beserta pilihan jawabannya, lalu menyalakan waktu
+function pkAsk(){
+  pkLocked=false;
+  const [a,b]=pkQs[pkIdx];
+  $('pkNo').textContent='Soal '+(pkIdx+1)+' dari '+PK_N;
+  $('pkSc').textContent='⭐ '+pkScore;
+  $('pkPg').style.width=(pkIdx/PK_N*100)+'%';
+  $('pkQ').textContent=a+' × '+b+' = ?';
+  $('pkMsg').textContent=pkStreak>=3?'🦊 '+pkStreak+' benar berturut-turut. Hebat!':'🦊 Pilih jawaban yang benar!';
+  const box=$('pkOpts');box.innerHTML='';
+  pkMakeOptions(a,b).forEach(v=>{
+    const btn=document.createElement('button');
+    btn.className='opt';btn.type='button';btn.textContent=v;
+    btn.onclick=()=>pkPick(btn,v,a,b);
+    box.appendChild(btn);
+  });
+  pkStartTimer();
+}
+// Menjalankan "jadwal tertunda" (mis. pindah soal setelah 1 detik) hanya bila ronde belum dihentikan
+function pkLater(fn,ms){const t=pkTok;setTimeout(()=>{if(t===pkTok)fn()},ms)}
+// Dipanggil saat anak mengetuk salah satu jawaban
+function pkPick(btn,v,a,b){
+  if(pkLocked)return;
+  pkLocked=true;pkStopTimer();
+  const left=Math.max(0,(pkTEnd-Date.now())/1000);   // sisa waktu (detik)
+  const ans=a*b,all=document.querySelectorAll('#pkOpts .opt');
+  all.forEach(x=>x.disabled=true);
+  if(v===ans){
+    // BENAR: 100 poin + bonus kecepatan (maks 100) + bonus beruntun (maks 50)
+    btn.classList.add('ok');pkRight++;pkStreak++;
+    const gain=100+Math.round(left/pkT*100)+Math.min(pkStreak-1,5)*10;
+    pkScore+=gain;
+    add(pkStreak>1?12:10);   // tambahan bintang di skor utama Asah Otak, sama seperti game lain
+    $('pkMsg').textContent='🦊 '+GOOD[rnd(0,GOOD.length-1)]+' +'+gain;
+    pkBeep(660,.1);setTimeout(()=>pkBeep(880,.15),110);
+    pkLater(pkNext,850);
+  }else{
+    // SALAH: tampilkan jawaban yang benar, soal ini dicatat untuk diulang
+    btn.classList.add('no','pk-shake');pkStreak=0;pkWrong.push([a,b]);
+    all.forEach(x=>{if(+x.textContent===ans)x.classList.add('ok')});
+    $('pkMsg').textContent='🦊 Hampir! '+a+' × '+b+' = '+ans;
+    pkBeep(200,.25,'triangle');
+    pkLater(pkNext,1900);
+  }
+  $('pkSc').textContent='⭐ '+pkScore;
+}
+
+/* ---- Penghitung waktu tiap soal ---- */
+// Menghentikan penghitung waktu
+function pkStopTimer(){if(pkTimer){clearInterval(pkTimer);pkTimer=null}}
+// Dipanggil tiap 0,1 detik: memperbarui bilah dan angka sisa waktu
+function pkTick(){
+  const left=Math.max(0,(pkTEnd-Date.now())/1000);
+  $('pkTi').style.width=(left/pkT*100)+'%';
+  $('pkTl').textContent='⏱ '+Math.ceil(left);
+  $('pkTb').classList.toggle('low',left<=3);   // merah saat tersisa 3 detik
+  if(left<=0){pkStopTimer();pkTimeout()}
+}
+// Menyalakan waktu untuk soal yang baru tampil
+function pkStartTimer(){pkStopTimer();pkTEnd=Date.now()+pkT*1000;pkTimer=setInterval(pkTick,100);pkTick()}
+// Waktu habis sebelum anak menjawab: dianggap salah
+function pkTimeout(){
+  if(pkLocked)return;
+  pkLocked=true;
+  const [a,b]=pkQs[pkIdx],ans=a*b;
+  document.querySelectorAll('#pkOpts .opt').forEach(x=>{x.disabled=true;if(+x.textContent===ans)x.classList.add('ok')});
+  pkStreak=0;pkWrong.push([a,b]);
+  $('pkMsg').textContent='🦊 Waktu habis! '+a+' × '+b+' = '+ans;
+  pkBeep(200,.25,'triangle');pkLater(pkNext,1900);
+}
+// Menghentikan ronde sepenuhnya (dipakai saat kembali ke menu atau mulai ronde baru)
+function pkStop(){pkStopTimer();pkTok++}
+
+/* ---- Pindah soal dan akhir ronde ---- */
+// Lanjut ke soal berikutnya; kalau sudah 10 soal, tampilkan hasil
+function pkNext(){pkIdx++;if(pkIdx>=PK_N)pkFinish();else pkAsk()}
+// Menampilkan hasil ronde: bintang, poin, komentar, rekor, dan soal yang perlu diulang
+function pkFinish(){
+  $('pkPg').style.width='100%';
+  const s=pkRight>=9?3:pkRight>=7?2:pkRight>=4?1:0;            // jumlah bintang
+  $('pkStars').textContent='⭐'.repeat(s)+'☆'.repeat(3-s);
+  $('pkFinal').textContent=pkScore+' poin';
+  let v=pkRight+' dari '+PK_N+' benar. '+(
+    pkRight===PK_N?'Sempurna! Rubi bangga sekali padamu.':
+    pkRight>=7?'Bagus sekali! Sedikit lagi sempurna.':
+    pkRight>=4?'Lumayan! Coba lagi supaya makin lancar.':
+    'Tidak apa-apa. Latihan setiap hari bikin kamu makin jago.');
+  if(pkRight>=7){PK.level++;v+=' Naik ke Level '+PK.level+'!'}   // naik level di menu Asah Otak
+  if(pkScore>pkBest){pkBest=pkScore;pkSet('asahotak-kali-poin',String(pkBest));v+=' Rekor baru!'}
+  $('pkVerdict').textContent=v;
+  $('pkSaveBox').hidden=false;$('pkName').value='';pkDrawBoard();
+  // Daftar soal yang salah, tanpa duplikat
+  const seen={},list=pkWrong.filter(w=>{const k=w[0]+'x'+w[1];if(seen[k])return false;seen[k]=1;return true});
+  $('pkRev').hidden=list.length===0;
+  $('pkRevList').innerHTML=list.map(w=>'<b>'+w[0]+' × '+w[1]+' = '+w[0]*w[1]+'</b>').join('');
+  pkBestText();pkShow('pkEnd');
+  [523,659,784].forEach((f,i)=>setTimeout(()=>pkBeep(f,.2),i*140));   // nada kemenangan
+}
+
+/* ---- Papan skor (5 teratas, tersimpan di perangkat) ---- */
+// Menggambar papan skor di layar pengaturan dan layar hasil; "me" = baris milik pemain yang baru menyimpan
+function pkDrawBoard(me){
+  [['pkLbM','pkBoxM'],['pkLbE','pkBoxE']].forEach(([listId,boxId])=>{
+    const ul=$(listId);ul.innerHTML='';
+    pkBoard.slice(0,5).forEach((r,i)=>{
+      const li=document.createElement('li'),a=document.createElement('span'),b=document.createElement('span');
+      if(r===me)li.className='me';
+      a.textContent=(i+1)+'. '+r.n;b.textContent=r.p+' poin';   // textContent = aman dari kode jahat
+      li.append(a,b);ul.appendChild(li);
+    });
+    $(boxId).hidden=pkBoard.length===0;
+  });
+}
+// Menyimpan nama + poin ke papan skor (maksimal 10 tersimpan, urut dari poin terbesar)
+function pkSaveScore(){
+  const me={n:($('pkName').value||'').trim().slice(0,12)||'Pemain',p:pkScore};
+  pkBoard.push(me);pkBoard.sort((x,y)=>y.p-x.p);pkBoard=pkBoard.slice(0,10);
+  pkSet('asahotak-kali-papan',JSON.stringify(pkBoard));
+  pkDrawBoard(me);$('pkSaveBox').hidden=true;
+}
+
+/* ---- Dipanggil menu saat game ini dibuka: kembali ke layar pengaturan ---- */
+function pkOpen(){
+  pkStop();pkLoad();pkDrawChips();pkDrawTime();pkSync();pkDrawBoard();pkBestText();pkShow('pkSetup');
+}
+
+/* ---- Menghubungkan tombol dengan fungsinya ---- */
+$('pkAll').onclick=()=>{for(let i=1;i<=10;i++)pkSel.add(i);pkDrawChips();pkSync()};
+$('pkNone').onclick=()=>{pkSel.clear();pkDrawChips();pkSync()};
+$('pkSnd').onclick=function(){pkSound=!pkSound;this.textContent='Suara: '+(pkSound?'nyala':'mati');pkBeep(660,.08)};
+$('pkStart').onclick=pkStart;
+$('pkAgain').onclick=pkStart;
+$('pkHome').onclick=pkOpen;
+$('pkSave').onclick=pkSaveScore;
+$('pkName').onkeydown=e=>{if(e.key==='Enter')pkSaveScore()};
+
+// Daftarkan game ke menu utama: [id bagian, ikon, judul, keterangan, objek level]
+GAMES.push(['kali','✖️','Petualangan Perkalian','Latih tabel perkalian 1–10',PK]);
+
+const CATS=[['🧩 Pola & Logika',['pola','angka','banding']],['👀 Pengamatan',['beda','unik','gambar']],['🧠 Memori',['memori','ingat','hilang']],['➕ Berhitung',['hitung','urut','cerita','kali']],['🔤 Bahasa',['kata','huruf','lawan']]];
+const menuEl=$('menu');
+function renderMenu(){menuEl.innerHTML=CATS.map(c=>'<h3 class="cat">'+c[0].replace('&','&amp;')+'</h3>'+c[1].map(id=>GAMES.find(x=>x[0]===id)).map(g=>`<button class="gcard" data-g="${g[0]}"><span class="ic">${g[1]}</span><b>${g[2]}</b><small>${g[3].replace('<','&lt;').replace('>','&gt;')}</small><span class="lv">Level ${g[4].level}</span></button>`).join('')).join('')}
+function showMenu(){gtok++;pkStop();GAMES.forEach(g=>$(g[0]).hidden=true);menuEl.hidden=false;$('mhint').hidden=false;renderMenu();window.scrollTo(0,0)}
+function openGame(id){
+  GAMES.forEach(g=>$(g[0]).hidden=g[0]!==id);menuEl.hidden=true;$('mhint').hidden=true;
+  if(id==='kali')pkOpen();if(id==='hilang')hilang();if(id==='ingat'){gtok++;gbusy=true;$('gnext').textContent='Mulai';$('gnext').hidden=false;$('gmsg').textContent=''}
+  window.scrollTo(0,0);
+}
+menuEl.onclick=e=>{const b=e.target.closest('button[data-g]');if(b)openGame(b.dataset.g)};
+document.querySelectorAll('.panel').forEach(p=>{const b=document.createElement('button');b.className='back';b.textContent='← Menu';b.onclick=showMenu;p.prepend(b)});
+
+ingatInit();pola();angka();memori();beda();hitung();urut();gambar();kata();bandingkan();huruf();lawan();cerita();unik();showMenu();
+
+/* Tombol "Kembali" di HP Android. Hanya aktif di dalam aplikasi APK (di browser biasa bagian ini dilewati). */
+(function(){
+  const cap=window.Capacitor;
+  if(!cap||!cap.Plugins||!cap.Plugins.App)return;
+  cap.Plugins.App.addListener('backButton',()=>{
+    if(menuEl.hidden)showMenu();          // sedang di dalam game -> kembali ke menu
+    else cap.Plugins.App.exitApp();       // sudah di menu -> keluar aplikasi
+  });
+})();
+</script>
+</body>
+</html>
